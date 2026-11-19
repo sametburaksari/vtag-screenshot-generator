@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const b = await chromium.launch({ headless: true });
+const p = await (await b.newContext({ viewport:{width:1280,height:800}, bypassCSP:true })).newPage();
+const imgs = [];
+p.on('response', r => { const u=r.url(); if(u.includes('logo')||u.includes('_next/image')) imgs.push(`${r.status()} ${u.slice(0,90)}`); });
+await p.goto('https://vrest.com.tr/', { waitUntil:'networkidle', timeout:45000 });
+await p.waitForTimeout(3500);
+const logo = await p.evaluate(() => { const im=[...document.querySelectorAll('header img, img')].find(i=>/logo/i.test(i.src)||/logo/i.test(i.alt||'')); return im?{src:im.currentSrc||im.src, nw:im.naturalWidth, nh:im.naturalHeight}:null; });
+console.log('HEADER LOGO:', JSON.stringify(logo));
+console.log('logo istekleri:'); imgs.slice(0,6).forEach(x=>console.log('  '+x));
+await p.screenshot({ path:'/tmp/site-header.png', clip:{x:0,y:0,width:1280,height:110} });
+await b.close();

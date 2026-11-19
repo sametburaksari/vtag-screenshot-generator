@@ -42,3 +42,20 @@ next-env.d.ts
 
 # large files
 *.zip
+capture-*.mjs
+# yedek: güvenli ignore kuralları
+.env
+.env.*
+!.env.example
+!*.example
+node_modules/
+.next/
+dist/
+build/
+.turbo/
+.vercel/
+.expo/
+__MACOSX/
+.claude/settings.local.json
+dev.log
+*.log
